@@ -19,18 +19,29 @@ namespace Catalogus.Tabs
 
         private void button1_Click(object sender, EventArgs e)
         {
-            TextBox[] textValues = new TextBox[] { txtTitel, txtSubtitel, txtAuteur, txtDeel };
+            int tempDeel;
+            Dictionary<string, string> errorMessages = new Dictionary<string, string>();
+            Data.Boek boek;
+            if (int.TryParse(txtDeel.Text, out tempDeel))
+            {
+                boek = new Data.Boek(Data.Catalogus.getBoeken().Count + 1, txtTitel.Text, txtSubtitel.Text, txtAuteur.Text, tempDeel);
+            }
+            else
+            {
+                boek = new Data.Boek(Data.Catalogus.getBoeken().Count + 1, txtTitel.Text, txtSubtitel.Text, txtAuteur.Text, 1);
+            }
+
+            errorMessages = boek.validate();
+
             Label[] textCheckers = new Label[] { lblTitelException, lblSubtitelException, lblAuteurException, lblDeelException };
-            int[] errorBits = checkValues(textValues);
 
             foreach(Label label in textCheckers)
             {
                 label.ResetText();
             }
 
-            if (!areExceptions(errorBits, textCheckers))
+            if (errorMessages.Count == 0)
             {
-                Data.Boek boek = new Data.Boek(Data.Catalogus.getBoeken().Count + 1, txtTitel.Text, txtAuteur.Text, txtSubtitel.Text, Convert.ToInt16(txtDeel.Text));
                 List<Data.Boek> duplicates = getDuplicates(boek);
                 if (!showDuplicateDialog(duplicates))
                 {
@@ -38,7 +49,25 @@ namespace Catalogus.Tabs
                     Data.Catalogus.setBufferOnopgeslagen(true);
                 }
             }
+            else
+            {
+                showErrors(errorMessages);
+            }
 
+        }
+
+        private void showErrors(Dictionary<string, string> errors)
+        {
+            foreach(KeyValuePair<string, string> messages in errors)
+            {
+                foreach(Control control in tableLayoutPanel1.Controls)
+                {
+                    if(control.Name.Equals("lbl" + messages.Key + "Exception"))
+                    {
+                        control.Text = messages.Value;
+                    }
+                }
+            }
         }
 
         private bool showDuplicateDialog(List<Data.Boek> duplicates)
@@ -71,99 +100,6 @@ namespace Catalogus.Tabs
                 }
             }
             return duplicates_local;
-        }
-
-        private int[] checkValues(TextBox[] textValues)
-        {
-            int[] errorBits = new int[] {0, 0, 0, 0};
-            for (int index = 0; index < textValues.Length; index++)
-            {
-                if(index == 0 || index == 2)
-                {
-                    if (String.IsNullOrWhiteSpace(textValues[index].Text))
-                    {
-                        errorBits[index] = 1;
-                    }
-                }
-                else if (index == 2)
-                {
-                    if (String.IsNullOrWhiteSpace(textValues[index].Text) && !String.IsNullOrEmpty(textValues[index].Text))
-                    {
-                        errorBits[index] = 1;    
-                    }
-                }
-                else if(index == 3)
-                {
-                    if (!int.TryParse(textValues[index].Text, out int deel))
-                    {
-                        errorBits[index] = 2;
-                    }
-                }
-            }
-            return errorBits;
-        }
-
-        private bool areExceptions(int[] errorBits, Label[] textCheckers)
-        {
-            if(errorBits.SequenceEqual(new int[] { 0, 0, 0, 0 }))
-            {
-                return false;
-            }
-            else
-            {
-                Dictionary<int, string> errorMessages = new Dictionary<int, string> { { 1, "Vereist!" }, { 2, "Geen nummer!" } };
-                for (int index = 0; index < errorBits.Length; index++)
-                {
-                    switch (index)
-                    {
-                        case 0:
-                            switch (errorBits[index])
-                            {
-                                case 1:
-                                    textCheckers[index].Text = errorMessages[1];
-                                    break;
-                                case 2:
-                                    textCheckers[index].Text = errorMessages[2];
-                                    break;
-                            }
-                            break;
-                        case 1:
-                            switch (errorBits[index])
-                            {
-                                case 1:
-                                    textCheckers[index].Text = errorMessages[1];
-                                    break;
-                                case 2:
-                                    textCheckers[index].Text = errorMessages[2];
-                                    break;
-                            }
-                            break;
-                        case 2:
-                            switch (errorBits[index])
-                            {
-                                case 1:
-                                    textCheckers[index].Text = errorMessages[1];
-                                    break;
-                                case 2:
-                                    textCheckers[index].Text = errorMessages[2];
-                                    break;
-                            }
-                            break;
-                        case 3:
-                            switch (errorBits[index])
-                            {
-                                case 1:
-                                    textCheckers[index].Text = errorMessages[1];
-                                    break;
-                                case 2:
-                                    textCheckers[index].Text = errorMessages[2];
-                                    break;
-                            }
-                            break;
-                    }
-                }
-                return true;
-            }
         }
     }
 }

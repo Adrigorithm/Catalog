@@ -28,6 +28,26 @@ namespace Catalogus.Data
             return id;
         }
 
+        public Dictionary<string, string> validate()
+        {
+            Dictionary<string, string> errorMessages = new Dictionary<string, string>();
+            if(String.IsNullOrWhiteSpace(titel))
+            {
+                errorMessages["Titel"] = "Dit veld is vereist!";
+            }
+
+            if(String.IsNullOrWhiteSpace(auteur))
+            {
+                errorMessages["Auteur"] = "Dit veld is vereist!";
+            }
+
+            if(deel < 1)
+            {
+                errorMessages["Deel"] = "Het deel is steeds ≥ 1";
+            }
+
+            return errorMessages;
+        }
         public string Titel { get => titel; set => titel = value; }
         public string Subtitel { get => subtitel; set => subtitel = value; }
         public string Auteur { get => auteur; set => auteur = value; }
