@@ -42,7 +42,7 @@ namespace Catalogus.Tabs
 
             if (errorMessages.Count == 0)
             {
-                List<Data.Boek> duplicates = getDuplicates(boek);
+                List<Data.Boek> duplicates = Data.Catalogus.getDuplicates(boek);
                 if (!showDuplicateDialog(duplicates))
                 {
                     Data.Catalogus.addBoek(boek);
@@ -82,24 +82,12 @@ namespace Catalogus.Tabs
                 DialogResult save = MessageBox.Show("Mogelijke duplicaten ontdenkt, wilt u het boek toch toevoegen?" + Environment.NewLine + Environment.NewLine + warning, "Duplicaten ontdekt!", MessageBoxButtons.YesNo);
                 if (save == DialogResult.Yes)
                 {
+
                     return false;
                 }
                 return true;
             }
             return false;
-        }
-
-        private List<Data.Boek> getDuplicates(Data.Boek boek)
-        {
-            List<Data.Boek> duplicates_local = new List<Data.Boek>();
-            foreach(Data.Boek boek_local in Data.Catalogus.getBoeken())
-            {
-                if (boek.Titel.ToLower().Equals(boek_local.Titel.ToLower()) && boek.Auteur.ToLower().Equals(boek_local.Auteur.ToLower()) && boek.Deel == boek_local.Deel)
-                {
-                    duplicates_local.Add(boek_local);
-                }
-            }
-            return duplicates_local;
         }
     }
 }

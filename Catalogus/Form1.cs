@@ -84,9 +84,9 @@ namespace Catalogus
         private void Button3_Click(object sender, EventArgs e)
         {
             if(Data.Catalogus.getBoekenSelectie().Count == 1)
-            {
-                panel5.Controls.Clear();
+            {   
                 Tabs.Wijzig_Boek wijzig_Boek = new Tabs.Wijzig_Boek(Data.Catalogus.getBoekenSelectie()[0]);
+                panel5.Controls.Clear();
                 panel5.Controls.Add(wijzig_Boek);
                 Data.Catalogus.resetBoekenSelectie();
                 Form1_Resize(sender, e);

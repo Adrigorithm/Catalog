@@ -21,10 +21,11 @@ namespace Catalogus.Tabs
 
         private void DataGridView1_SelectionChanged(object sender, EventArgs e)
         {
+            Data.Catalogus.resetBoekenSelectie();
             foreach(DataGridViewRow row in dataGridView1.SelectedRows)
             {
                 Data.Boek boekSelected = (Data.Boek)row.DataBoundItem;
-                Data.Catalogus.addBoekenSelectie(Data.Catalogus.getBoeken()[boekSelected.getId()]);
+                Data.Catalogus.addBoekenSelectie(boekSelected);
             }
         }
 

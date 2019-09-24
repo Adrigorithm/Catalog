@@ -16,6 +16,8 @@ namespace Catalogus.Data
         private static List<Boek> boekenSelectie = new List<Boek>();
         private static bool bufferOnopgeslagen = false;
 
+        public static List<Boek> Boeken { get => boeken; set => boeken = value; }
+
         public static List<Boek> getBoekenSelectie()
         {
             return boekenSelectie;
@@ -33,6 +35,22 @@ namespace Catalogus.Data
         public static List<Boek> getBoeken()
         {
             return boeken;
+        }
+
+        public static Data.Boek getBoek(int index)
+        {
+            return getBoeken()[index];
+        }
+
+        public static void setBoek(Data.Boek boek)
+        {
+            for(int i = 0; i < boeken.Count; i++)
+            {
+                if (boeken[i].Id.Equals(boek.Id))
+                {
+                    boeken[i] = boek;
+                }
+            }
         }
 
         public static List<Boek> getBoekenContains(string property, string value)
@@ -95,6 +113,19 @@ namespace Catalogus.Data
         public static void saveBoeken()
         {
             File.WriteAllText("catalogus.json", JsonConvert.SerializeObject(boeken));
+        }
+
+        public static List<Data.Boek> getDuplicates(Data.Boek boek)
+        {
+            List<Data.Boek> duplicates_local = new List<Data.Boek>();
+            foreach(Data.Boek boek_local in getBoeken())
+            {
+                if (boek.Titel.ToLower().Equals(boek_local.Titel.ToLower()) && boek.Auteur.ToLower().Equals(boek_local.Auteur.ToLower()) && boek.Deel == boek_local.Deel)
+                {
+                    duplicates_local.Add(boek_local);
+                }
+            }
+            return duplicates_local;
         }
     }
 }

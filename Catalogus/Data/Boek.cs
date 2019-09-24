@@ -48,6 +48,7 @@ namespace Catalogus.Data
 
             return errorMessages;
         }
+        public int Id { get => id; set => id = value; }
         public string Titel { get => titel; set => titel = value; }
         public string Subtitel { get => subtitel; set => subtitel = value; }
         public string Auteur { get => auteur; set => auteur = value; }
